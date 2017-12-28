@@ -12,5 +12,6 @@ addr. a.
 B "Click me" 
 p c "The Scream" "by Edward Munch. Painted in 1893." p.
 p "cE VREAU EU" $ "A piece of computer code" $. "mAI AM PCIAIC " p.
+p "NU merge" p.
 end
 -

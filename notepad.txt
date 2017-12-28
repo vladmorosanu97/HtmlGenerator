@@ -1,0 +1,26 @@
+# ** "Content"
+## "Heading 2"
+### "Heading 3"
+#### i "Heading 4" "Contentwwerwerwer wewre wer wer werwer" i "Content" "asasda a sdasdasd" "asdadad asd "
+##### ** "Heading 5"
+/
+###### "Heading 6"
+p "Aici e paragraf"
+p ~~ "Text taiat in paragraf"
+> p "Fusion Drive combines"
+u ^ "Lista 1" 
+  ^ "Lista 2"
+  ^ "Lista 3"
+  u ^ "Ceva intre"
+    ^ "Ceva intre 2"
+  u.
+  ^ "Lista 4"
+u.
+o ^ "Lista ord 1" 
+  ^ "Lista ord 2"
+  ^ "Lista ord 3"
+o.
+!|| "Tip"    || "Descriere"                    || "Particularitati" ||     "Beneficii"      !.
+%|  "int"    |  "tip intreg 64 biti"           |   "sunt multe"     | "o usoara utilizare"  |.
+ |  "char"   |  "tip pentru caractere"         | "foarte utilizat"  | "multi pointeri"      |.
+ |  "float"  |  "doar pentru numere cu virgula"| "multe calcule"    | "merge"               %.

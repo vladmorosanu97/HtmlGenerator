@@ -8,6 +8,9 @@ module HRM-SYNTAX
                     | "**" Content
                     | "i" Content
                     | "~~" Content
+                    | "[" Style "]"
+                    | "![" Style "]"
+                    | "c" Content
                     | Content
 
     syntax Lista ::= Lista Lista   [left,prefer]
@@ -37,7 +40,13 @@ module HRM-SYNTAX
                       | "/"
                       | "p" Style
                       | "p."
-
+                      | "addr" Style
+                      | "addr."
+                      | "___"
+                      | "B" Style
+                      | "B."
+                      | "$" Style
+                      | "$."
 
     syntax Block ::= ">" Symbol
                     | ">."
@@ -45,11 +54,23 @@ module HRM-SYNTAX
                     | "u."
                     | "o" Lista
                     | "o."
+                    | "a" Symbol
+                    | "a."
+
+    syntax Table  ::= "!" 
+                    | "!."
+                    | "|" Style
+                    | "||" Style
+                    | "|."
+                    | "||."
+                    | "%"
+                    | "%." 
 
     syntax Stmt ::= Symbol
                 | Style
                 | Lista
                 | Block
+                | Table
                 > Stmt Stmt                     [left]
  
  
@@ -85,6 +106,10 @@ module HRM
     rule <k> ((>.) => .) ...</k>
         <out>... (.List => ListItem("</blockquote>\n")) </out>
 
+    rule <k> (a R:Symbol => R ) ...</k>
+        <out>... (.List => ListItem("<article>\n")) </out>
+    rule <k> ((a.) => .) ...</k>
+        <out>... (.List => ListItem("</article>\n")) </out>
 
 
     rule <k> (u L:Lista => L ) ...</k>
@@ -96,6 +121,30 @@ module HRM
         <out>... (.List => ListItem("<ol>\n")) </out>
     rule <k> ((o.) => .) ...</k>
         <out>... (.List => ListItem("</ol>\n")) </out>
+
+
+
+
+    rule <k> (! => .) ... </k>
+         <out>... (.List => ListItem("<table>\n<thead>\n<tr>\n")) </out>
+
+    rule <k> (|| I:Style => .) ... </k>
+        <out>... (.List => ListItem("<th>")) (.List => ListItem(I)) (.List => ListItem("</th>\n"))</out>
+
+    rule <k> (!. => .) ... </k>
+        <out>... (.List => ListItem("</tr>\n</thead>\n")) </out>
+
+    rule <k> (% => .) ... </k>
+         <out>... (.List => ListItem("<tbody>\n<tr>\n")) </out>
+
+    rule <k> (|. => .) ... </k>
+        <out>... (.List => ListItem("</tr>\n<tr>\n")) </out>
+
+    rule <k> (%. => .) ... </k>
+        <out>... (.List => ListItem("</tr>\n</tbody>\n</table>\n")) </out>
+    
+    rule <k> (| I:Style => .) ... </k>
+        <out>... (.List => ListItem("<td>")) (.List => ListItem(I)) (.List => ListItem("</td>\n"))</out>
 
 
 
@@ -129,16 +178,34 @@ module HRM
 
 
 
-    rule <k> (p I:Style => I p.) ...</k>
+    rule <k> (p I:Style => I) ...</k>
         <out>... (.List => ListItem("<p>")) </out>
     rule <k> (p. => .) ...</k>
         <out>... (.List => ListItem("</p>\n")) </out>
+
+    rule <k> ($ I:Style => I) ...</k>
+        <out>... (.List => ListItem("<code>")) </out>
+    rule <k> ($. => .) ...</k>
+        <out>... (.List => ListItem("</code>\n")) </out>
+    
     
 
+    rule <k> ([C1:Style C2:Style] => .) ...</k>
+        <out>... (.List => ListItem("<a href="))(.List => ListItem(C1))(.List => ListItem(">"))(.List => ListItem(C2))(.List => ListItem("</a>")) </out>
+
+    rule <k> (![C1:Style C2:Style] => .) ...</k>
+        <out>... (.List => ListItem("<img src="))(.List => ListItem(C1))(.List => ListItem(" alt="))(.List => ListItem(C2))(.List => ListItem(">")) </out>
 
     rule <k> (/  => .) ...</k>
+        <out>... (.List => ListItem("<br>\n")) </out> 
+
+    rule <k> (___  => .) ...</k>
         <out>... (.List => ListItem("<hr>\n")) </out> 
     
+    rule <k> (B I:Style => I B.) ...</k>
+        <out>... (.List => ListItem("<button>")) </out>
+    rule <k> (B. => .) ...</k>
+        <out>... (.List => ListItem("</button>\n")) </out>
     
 
     rule <k> (^ I:Style => I ^.) ...</k>
@@ -147,6 +214,10 @@ module HRM
         <out>... (.List => ListItem("</li>\n")) </out>
 
 
+    rule <k> (addr I:Style => I) ...</k>
+        <out>... (.List => ListItem("<addres>")) </out>
+    rule <k> (addr. => .) ...</k>
+        <out>... (.List => ListItem("</addres>\n")) </out>
 
 
     rule <k> (** C:Content => C **.) ...</k>
@@ -159,6 +230,8 @@ module HRM
     rule <k> (i.  => .) ...</k>
         <out>... (.List => ListItem("</em>")) </out>
 
+    rule <k> (c C:Content => .) ...</k>
+        <out>... (.List => ListItem("<cite>"))(.List => ListItem(C))(.List => ListItem("</cite>"))</out>
 
     rule <k> (~~ C:Content => C ~~.) ...</k>
         <out>... (.List => ListItem("<del>"))</out>

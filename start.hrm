@@ -1,27 +1,16 @@
 +
 start
-# ** "Content"
-## "Heading 2"
-### "Heading 3"
-#### i "Heading 4" "Contentwwerwerwer wewre wer wer werwer" i "Content" "asasda a sdasdasd" "asdadad asd "
-##### ** "Heading 5"
-/
-###### "Heading 6"
-p "Aici e paragraf"
-p ~~ "Text taiat in paragraf"
-> p i "Fusion Drive" "combines"
-u ^ "Lista 1" 
-  ^ "Lista 2"
-  ^ "Lista 3"
-  u ^ "Ceva intre"
-    ^ "Ceva intre 2"
-  u.
-  ^ "Lista 4"
-u.
-o ^ "Lista ord 1" 
-  ^ "Lista ord 2"
-  ^ "Lista ord 3"
-o.
-
+a p "Ana are" ["https://ro.wikipedia.org/wiki/M%C4%83r" "mere"] ** "si banane" "sau portocale" p.
+p "Eu vreau sa pun imaginea" !["https://www.w3schools.com/images/w3schools_green.jpg" "Tag img"] p. a.
+___
+a addr "Written by" ["mailto:webmaster@example.com" "Jon Doe"] / 
+"Visit us at:"/
+"Example.com"/
+"Box 564, Disneyland"/
+"USA"/
+addr. a.
+B "Click me" 
+p c "The Scream" "by Edward Munch. Painted in 1893." p.
+p "cE VREAU EU" $ "A piece of computer code" $. "mAI AM PCIAIC " p.
 end
 -

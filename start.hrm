@@ -1,17 +1,11 @@
-+
-start
-a p "Ana are" ["https://ro.wikipedia.org/wiki/M%C4%83r" "mere"] ** "si banane" "sau portocale" p.
-p "Eu vreau sa pun imaginea" !["https://www.w3schools.com/images/w3schools_green.jpg" "Tag img"] p. a.
-___
-a addr "Written by" ["mailto:webmaster@example.com" "Jon Doe"] / 
-"Visit us at:"/
-"Example.com"/
-"Box 564, Disneyland"/
-"USA"/
-addr. a.
-B "Click me" 
-p c "The Scream" "by Edward Munch. Painted in 1893." p.
-p "cE VREAU EU" $ "A piece of computer code" $. "mAI AM PCIAIC " p.
-p "NU merge" p.
++:
+HH :
+lk :
+HH.
+start [ w 50 h 300 ] :
+Y :
+y : "Optiunea 1" y.
+y : "Optiunea 2" y.
+Y.
 end
 -

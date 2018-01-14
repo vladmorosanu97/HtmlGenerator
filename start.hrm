@@ -2,10 +2,9 @@
 HH :
 lk :
 HH.
-start [ w 50 h 300 ] :
-Y :
-y : "Optiunea 1" y.
-y : "Optiunea 2" y.
-Y.
+start [ id "Body" w 50 h 300 ] :
+T :
+! : TableCols 0 50 !.
+% : TableLines 50 50 %.
 end
 -

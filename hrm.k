@@ -20,6 +20,8 @@ module HRM-SYNTAX
                     | "mk" Content
                     | "mk."
                     | "e."
+                    | "--" Id
+                    | Content "=" Content                   [strict(2)]
 
 
     syntax Lista ::= Lista Lista   [left,prefer]
@@ -103,6 +105,16 @@ module HRM-SYNTAX
                     | "Y."
                     | "y"
                     | "y."
+                    | "<as"
+                    | "as>"
+                    | "<fg"
+                    | "fg>"
+                    | "M"
+                    | "M."
+                    | "D"
+                    | "D."
+                    | "P"
+                    | "P."
                      
 
 
@@ -116,16 +128,37 @@ module HRM-SYNTAX
                     | "%." 
                     | "T"
                     | "T."
+                    | ";"
+                    | ";."
 
     syntax ListAttributes ::= "w" Content
                             | "h" Content
+                            | "t" Content
+                            | "n" Content
+                            | "ac" Content
+                            | "v" Content
+                            | "sr" Content
+                            | "hr" Content
+                            | "cl" Content
+                            | "id" Content
+                            | "ro" Content
+                            | "co" Content
+                            | "sz" Content
+                            | "sy" Content
+                            | "tt" Content
+                            | "mn" Content
+                            | "mx" Content
+                            | "d"
                             | "["
                             | "]"
                             | ":"
                             | ListAttributes ListAttributes [left]
 
 
-    syntax Stmt ::= Content
+    syntax Stmt ::= "TableRows" Int Int
+                | "TableCols" Int Int
+                | "TableLines" Int Int
+                | Content
                 | Symbol
                 | ListAttributes
                 | Style
@@ -154,6 +187,10 @@ module HRM
 //////////////////////////////////////////////////////////////////////// Regula pentru string
 
     rule Str1 Str2 => Str1 +String Str2
+
+////////////////////////////////////////////////////////////////////////// Scadere
+
+    rule I1:Int - I2:Int => I1 -Int I2
 
 //////////////////////////////////////////////////////////////////////// Html
     
@@ -249,6 +286,46 @@ module HRM
     rule <k> (n> => .) ...</k>
         <out>... (.List => ListItem("\n</nav>")) </out>
 
+////////////////////////////////////////////////////////////////////////// Aside
+
+    rule <k> (<as => .) ...</k>
+        <out>... (.List => ListItem("\n<aside")) </out>
+    
+    rule <k> (as> => .) ...</k>
+        <out>... (.List => ListItem("\n</aside>")) </out>
+
+////////////////////////////////////////////////////////////////////////// Figure
+
+    rule <k> (<fg => .) ...</k>
+        <out>... (.List => ListItem("\n<figure")) </out>
+    
+    rule <k> (fg> => .) ...</k>
+        <out>... (.List => ListItem("\n</figure>")) </out>
+
+////////////////////////////////////////////////////////////////////////// Meter
+
+    rule <k> (M => .) ...</k>
+        <out>... (.List => ListItem("\n<meter")) </out>
+    
+    rule <k> (M. => .) ...</k>
+        <out>... (.List => ListItem("\n</meter>")) </out>
+
+////////////////////////////////////////////////////////////////////////// Details
+
+    rule <k> (D => .) ...</k>
+        <out>... (.List => ListItem("\n<details")) </out>
+    
+    rule <k> (D. => .) ...</k>
+        <out>... (.List => ListItem("\n</details>")) </out>
+
+////////////////////////////////////////////////////////////////////////// Progress
+
+    rule <k> (P => .) ...</k>
+        <out>... (.List => ListItem("\n<progress")) </out>
+    
+    rule <k> (P. => .) ...</k>
+        <out>... (.List => ListItem("\n</progress>")) </out>
+
 
 
 ///////////////////////////////////////////////////////////////////////// Liste neordonate
@@ -277,15 +354,19 @@ module HRM
 
     rule <k> (! => .) ... </k>
          <out>... (.List => ListItem("\n<thead>\n<tr")) </out>
-
+             
     rule <k> (|| I:Style => .) ... </k>
         <out>... (.List => ListItem("\n<th>")) (.List => ListItem(I)) (.List => ListItem("\n</th>"))</out>
+    
 
     rule <k> (!. => .) ... </k>
-        <out>... (.List => ListItem("\n</tr>\n</thead>")) </out>
+        <out>... (.List => ListItem("<\n</tr>\n</thead>")) </out>
 
     rule <k> (% => .) ... </k>
          <out>... (.List => ListItem("\n<tbody>\n<tr")) </out>
+
+     rule <k> (; => .) ... </k>
+         <out>... (.List => ListItem("\n<tr>")) </out>
 
     rule <k> (| I:Style => .) ... </k>
         <out>... (.List => ListItem("\n<td>")) (.List => ListItem(I)) (.List => ListItem("\n</td>"))</out>
@@ -293,8 +374,34 @@ module HRM
     rule <k> (|. => .) ... </k>
         <out>... (.List => ListItem("\n</tr>\n<tr>\n")) </out>
 
+     rule <k> (;. => .) ... </k>
+        <out>... (.List => ListItem("\n</tr>")) </out>
     rule <k> (%. => .) ... </k>
-        <out>... (.List => ListItem("\n</tr>\n</tbody>")) </out>
+        <out>... (.List => ListItem("\n</tbody>")) </out>
+
+/////////////////////////////////////////////////////////////////////////////////////// Generare tabel head
+
+
+    rule <k> (TableCols Z Z => .) ... </k>
+        <out>... (.List => ListItem("\n<th>"))(.List => ListItem("Coloana nr. ")) (.List => ListItem( Z )) (.List => ListItem("</th>"))</out>
+
+    rule <k> ((TableCols X:Int Z:Int )  => TableCols X +Int 1 Z) ...</k>
+         <out>... (.List => ListItem("\n<th>"))(.List => ListItem("Coloana nr. ")) (.List => ListItem( X )) (.List => ListItem("</th>"))</out>  when X =/=Int Z
+
+
+////////////////////////////////////////////////////////////////////////////////////// Generare tabel body
+
+    rule <k> (TableRows Z Z => .) ... </k>
+        <out>... (.List => ListItem("\n<td>"))(.List => ListItem("Linia pentru col nr. ")) (.List => ListItem( Z )) (.List => ListItem("</td>"))</out>
+
+    rule <k> ((TableRows X:Int Z:Int )  => TableRows X +Int 1 Z) ...</k>
+         <out>... (.List => ListItem("\n<td>"))(.List => ListItem("Linia pentru col nr. ")) (.List => ListItem( X )) (.List => ListItem("</td>"))</out>  when X =/=Int Z
+
+    rule <k> (TableLines 0 Z:Int => .) ... </k>
+        <out>... (.List => ListItem("\n</tr>"))</out>
+
+    rule <k> ((TableLines X:Int Z:Int ) =>  (TableRows 0 Z) TableLines X -Int 1 Z ) ... </k>
+        <out>... (.List => ListItem("\n</tr>"))(.List => ListItem("\n<tr>")) </out> when X =/=Int 0
 
 //////////////////////////////////////////////////////////////////////// H1 - H6
 
@@ -520,19 +627,107 @@ module HRM
     rule <k> (~~.  => .) ...</k>
         <out>... (.List => ListItem("</del>")) </out>
 
-
+/////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////// Attributes
-    
+/////////////////////////////////////////////////////////////////////////
+
     rule <k> ( [ => .) ... </k>
 
     rule <k> ( ] => .) ... </k>
-    
+
+///////////////////////////////////////////////////////////////////////// Width
+
     rule <k> (w C:Content => C ) ...</k>
         <out>... (.List => ListItem(" width=")) </out>
+    
+/////////////////////////////////////////////////////////////////////////// Height
     
     rule <k> (h C:Content => C ) ...</k>
         <out>... (.List => ListItem(" height=")) </out>
 
+//////////////////////////////////////////////////////////////////////////// Type
+
+    rule <k> (t C:Content => C ) ...</k>
+        <out>... (.List => ListItem(" type=")) </out>
+
+//////////////////////////////////////////////////////////////////////////// Name
+
+    rule <k> (n C:Content => C ) ...</k>
+        <out>... (.List => ListItem(" name=")) </out>
+
+//////////////////////////////////////////////////////////////////////////// Action
+
+    rule <k> (ac C:Content => C ) ...</k>
+        <out>... (.List => ListItem(" action=")) </out>
+
+//////////////////////////////////////////////////////////////////////////// Value
+
+    rule <k> (v C:Content => C ) ...</k>
+        <out>... (.List => ListItem(" value=")) </out>
+    
+//////////////////////////////////////////////////////////////////////////// Src
+
+    rule <k> (sr C:Content => C ) ...</k>
+        <out>... (.List => ListItem(" src=")) </out>
+
+//////////////////////////////////////////////////////////////////////////// Href
+
+    rule <k> (hr C:Content => C ) ...</k>
+        <out>... (.List => ListItem(" href=")) </out>
+
+//////////////////////////////////////////////////////////////////////////// Clasa
+
+    rule <k> (cl C:Content => C ) ...</k>
+        <out>... (.List => ListItem(" class=")) </out>
+    
+//////////////////////////////////////////////////////////////////////////// Id
+
+    rule <k> (id C:Content => C ) ...</k>
+        <out>... (.List => ListItem(" id=")) </out>
+
+//////////////////////////////////////////////////////////////////////////// Row
+
+    rule <k> (ro C:Content => C ) ...</k>
+        <out>... (.List => ListItem(" rows=")) </out>
+
+//////////////////////////////////////////////////////////////////////////// Col
+
+    rule <k> (co C:Content => C ) ...</k>
+        <out>... (.List => ListItem(" cols=")) </out>
+    
+//////////////////////////////////////////////////////////////////////////// Download
+
+    rule <k> (d => . ) ...</k>
+        <out>... (.List => ListItem(" download")) </out>
+
+//////////////////////////////////////////////////////////////////////////// Size
+
+    rule <k> (sz C:Content => C ) ...</k>
+        <out>... (.List => ListItem(" size=")) </out>
+    
+    rule <k> (: => .) ...</k>
+        <out>... (.List => ListItem(">\n")) </out>
+
+/////////////////////////////////////////////////////////////////////////// Style
+
+    rule <k> (sy C:Content => C ) ...</k>
+        <out>... (.List => ListItem(" style=")) </out>
+    
+/////////////////////////////////////////////////////////////////////////// Title
+
+    rule <k> (tt C:Content => C ) ...</k>
+        <out>... (.List => ListItem(" title=")) </out>
+    
+/////////////////////////////////////////////////////////////////////////// Min
+
+    rule <k> (mn C:Content => C ) ...</k>
+        <out>... (.List => ListItem(" min=")) </out>
+
+/////////////////////////////////////////////////////////////////////////// Max
+
+    rule <k> (mx C:Content => C ) ...</k>
+        <out>... (.List => ListItem(" max=")) </out>
+    
     rule <k> (: => .) ...</k>
         <out>... (.List => ListItem(">\n")) </out>
     
@@ -540,6 +735,22 @@ module HRM
     
     rule <k>((C:Content) => .) ...</k>
         <out>... (.List => ListItem(C)) </out>
+
+
+
+
+
+
+
+    
+
+    
+   
+
+
+
+
+
 
 
 endmodule

@@ -89,7 +89,7 @@ module HRM-SYNTAX
                     | "<h"
                     | "h>"
                     | "<m"
-                    | "m>"
+                    | "m."
                     | "<n"
                     | "n>"
                     | "<s"
@@ -148,6 +148,7 @@ module HRM-SYNTAX
                             | "tt" Content
                             | "mn" Content
                             | "mx" Content
+                            | "r" Content
                             | "d"
                             | "["
                             | "]"
@@ -275,7 +276,7 @@ module HRM
     rule <k> (<m => .) ...</k>
         <out>... (.List => ListItem("\n<main")) </out>
     
-    rule <k> (m> => .) ...</k>
+    rule <k> (m. => .) ...</k>
         <out>... (.List => ListItem("\n</main>")) </out>
 
 ////////////////////////////////////////////////////////////////////////// Navigation
@@ -405,37 +406,37 @@ module HRM
 
 //////////////////////////////////////////////////////////////////////// H1 - H6
 
-    rule <k> (###### I:Style => I ######.) ...</k>
+    rule <k> (###### I:Style => I ) ...</k>
         <out>... (.List => ListItem("\n<h6>")) </out>
     
     rule <k> ((######.) => .) ...</k>
         <out>... (.List => ListItem("\n</h6>\n")) </out>
     
-    rule <k> (##### I:Style => I #####.) ...</k>
+    rule <k> (##### I:Style => I ) ...</k>
         <out>... (.List => ListItem("\n<h5>")) </out>
     
     rule <k> ((#####.) => .) ...</k>
         <out>... (.List => ListItem("\n</h5>\n")) </out>
     
-    rule <k> (#### I:Style => I ####.) ...</k>
+    rule <k> (#### I:Style => I ) ...</k>
         <out>... (.List => ListItem("\n<h4>")) </out>
     
     rule <k> ((####.) => .) ...</k>
         <out>... (.List => ListItem("\n</h4>\n")) </out>
     
-    rule <k> (### I:Style => I ###.) ...</k>
+    rule <k> (### I:Style => I ) ...</k>
         <out>... (.List => ListItem("\n<h3>")) </out>
     
     rule <k> ((###.) => .) ...</k>
         <out>... (.List => ListItem("\n</h3>\n")) </out>
     
-    rule <k> (## I:Style => I ##.) ...</k>
+    rule <k> (## I:Style => I ) ...</k>
         <out>... (.List => ListItem("\n<h2>")) </out>
     
     rule <k> ((##.) => .) ...</k>
         <out>... (.List => ListItem("\n</h2>\n")) </out>
     
-    rule <k> (# I:Style => I #.) ...</k>
+    rule <k> (# I:Style => I ) ...</k>
         <out>... (.List => ListItem("\n<h1>")) </out>
     
     rule <k> (#. => .) ...</k>
@@ -728,6 +729,10 @@ module HRM
     rule <k> (mx C:Content => C ) ...</k>
         <out>... (.List => ListItem(" max=")) </out>
     
+/////////////////////////////////////////////////////////////////////////// Rel
+
+    rule <k> (r C:Content => C ) ...</k>
+        <out>... (.List => ListItem(" rel=")) </out>
     rule <k> (: => .) ...</k>
         <out>... (.List => ListItem(">\n")) </out>
     

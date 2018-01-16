@@ -1,10 +1,33 @@
 +:
 HH :
-lk :
+lk [ r "stylesheet" t "text/css" hr "teamplateOne.css" ] :
+ti : "Harraman Teamplate" ti.
 HH.
-start [ id "Body" w 50 h 300 ] :
+start [ w 50 h 300 ] :
+<h :
+
+<n : 
+u [ cl "inline" ] :
+^ "Sign up"
+^ "Login"
+^ "Authors"
+^ "Learn more"
+u.
+n>
+# "Lorem Ipsum" #.
+### "Lorem ipsum dolor sit amet, consectetur adipiscing elit" ###.
+B : "Learn more" B.
+h>
+<m :
+## "1. Lorem ipsum dolor sit 1" ##.
 T :
-! : TableCols 0 50 !.
-% : TableLines 50 50 %.
+! :
+ TableCols 0 4 !.
+% : 
+ TableLines 2 4 %.
+T.
+
+A : 
+m.
 end
 -
